@@ -60,9 +60,18 @@ async function handleFormSubmit(event) {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                csv_file: { filename: csvFile.name },
-                earth_fix: { filename: earthFix.name },
-                earth_nav: { filename: earthNav.name }
+                csv_file: {
+                    pathname: urlData.csv_file.pathname,
+                    filename: csvFile.name
+                },
+                earth_fix: {
+                    pathname: urlData.earth_fix.pathname,
+                    filename: earthFix.name
+                },
+                earth_nav: {
+                    pathname: urlData.earth_nav.pathname,
+                    filename: earthNav.name
+                }
             })
         });
         
@@ -92,8 +101,7 @@ async function uploadFileToBlobStorage(file, url) {
     const response = await fetch(url, {
         method: 'PUT',
         headers: {
-            'Content-Type': file.type || 'application/octet-stream',
-            'x-ms-blob-type': 'BlockBlob'
+            'Content-Type': file.type || 'application/octet-stream'
         },
         body: file
     });
