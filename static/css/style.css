@@ -1,0 +1,706 @@
+/* Modern UI with Dark Theme */
+:root {
+    --primary-color: #6d5acd;
+    --primary-light: #9c8aef;
+    --primary-dark: #4a3cb0;
+    --secondary-color: #2ce6b2;
+    --accent-color: #ff7e5f;
+    --dark-color: #121212;
+    --dark-surface: #1e1e1e;
+    --dark-surface-lighter: #2d2d2d;
+    --text-primary: #ffffff;
+    --text-secondary: #b3b3b3;
+    --info-color: #56a3f5;
+    --success-color: #2ce6b2;
+    --warning-color: #ffcf56;
+    --error-color: #ff5a5f;
+    --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    --shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+    --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+    --glow: 0 0 15px rgba(108, 90, 205, 0.5);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--dark-color);
+    color: var(--text-primary);
+    line-height: 1.6;
+    min-height: 100vh;
+    background-image: 
+        radial-gradient(circle at 10% 20%, rgba(108, 90, 205, 0.1) 0%, transparent 30%),
+        radial-gradient(circle at 90% 80%, rgba(44, 230, 178, 0.1) 0%, transparent 30%);
+    background-attachment: fixed;
+}
+
+::selection {
+    background-color: var(--primary-light);
+    color: white;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-weight: 600;
+    margin-bottom: 1rem;
+    letter-spacing: -0.02em;
+}
+
+a {
+    text-decoration: none;
+    color: var(--primary-light);
+    transition: var(--transition);
+    position: relative;
+}
+
+a:hover {
+    color: var(--secondary-color);
+}
+
+a:after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: -4px;
+    left: 0;
+    background-color: var(--secondary-color);
+    transition: width 0.3s ease;
+}
+
+a:hover:after {
+    width: 100%;
+}
+
+.app-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+/* Header styles */
+header {
+    margin-bottom: 3rem;
+    padding: 1rem 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    animation: fadeInDown 0.8s ease-out;
+}
+
+.logo i {
+    font-size: 2.5rem;
+    color: var(--primary-light);
+    text-shadow: var(--glow);
+}
+
+.logo h1 {
+    font-size: 1.8rem;
+    margin-bottom: 0;
+    background: linear-gradient(90deg, var(--primary-light), var(--secondary-color));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-weight: 700;
+}
+
+/* Hero section */
+.hero {
+    background: linear-gradient(135deg, rgba(108, 90, 205, 0.9), rgba(74, 60, 176, 0.8));
+    border-radius: 16px;
+    padding: 4rem 2rem;
+    color: white;
+    margin-bottom: 3rem;
+    text-align: center;
+    box-shadow: var(--shadow);
+    position: relative;
+    overflow: hidden;
+    animation: fadeIn 1s ease-out;
+    backdrop-filter: blur(5px);
+}
+
+.hero::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: 
+        radial-gradient(circle at center, rgba(255, 255, 255, 0.1) 0%, transparent 20%),
+        radial-gradient(circle at center, rgba(255, 255, 255, 0.05) 0%, transparent 30%);
+    z-index: -1;
+    animation: rotate 40s linear infinite;
+}
+
+.hero h2 {
+    font-size: 3rem;
+    margin-bottom: 1.5rem;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+}
+
+.hero p {
+    font-size: 1.3rem;
+    max-width: 700px;
+    margin: 0 auto;
+    opacity: 0.9;
+}
+
+/* Card styles */
+.converter-card, .success-card, .instructions {
+    background-color: var(--dark-surface);
+    border-radius: 16px;
+    padding: 2.5rem;
+    margin-bottom: 3rem;
+    box-shadow: var(--card-shadow);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    transform: translateY(0);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    animation: fadeInUp 1s ease-out;
+}
+
+.converter-card:hover, .success-card:hover, .instructions:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--card-shadow), 0 0 15px rgba(108, 90, 205, 0.3);
+}
+
+.converter-card h3, .success-card h3, .instructions h3 {
+    font-size: 1.8rem;
+    margin-bottom: 1.5rem;
+    color: var(--text-primary);
+    text-align: center;
+    position: relative;
+    display: inline-block;
+    padding-bottom: 10px;
+    width: 100%;
+}
+
+.converter-card h3::after, .success-card h3::after, .instructions h3::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    width: 80px;
+    height: 3px;
+    background: linear-gradient(90deg, var(--primary-light), var(--secondary-color));
+    transform: translateX(-50%);
+    border-radius: 3px;
+}
+
+/* Alert styles */
+.alert {
+    padding: 1.2rem;
+    border-radius: 12px;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    background-color: var(--dark-surface-lighter);
+    border-left: 4px solid;
+    animation: slideInRight 0.5s ease-out;
+}
+
+.alert-error {
+    border-color: var(--error-color);
+    color: var(--error-color);
+}
+
+.alert i {
+    font-size: 1.5rem;
+}
+
+/* Form styles */
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.file-input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+    transition: var(--transition);
+}
+
+.file-input-group:hover {
+    transform: translateX(5px);
+}
+
+.file-input {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+}
+
+.file-input label {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    background-color: var(--dark-surface-lighter);
+    color: var(--text-primary);
+    padding: 1.2rem;
+    border-radius: 12px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: var(--transition);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.file-input label:hover {
+    background-color: var(--primary-dark);
+    color: white;
+    border-color: var(--primary-light);
+    box-shadow: 0 0 15px rgba(108, 90, 205, 0.3);
+}
+
+.file-input label i {
+    font-size: 1.5rem;
+    color: var(--primary-light);
+    transition: var(--transition);
+}
+
+.file-input label:hover i {
+    color: var(--secondary-color);
+    transform: scale(1.1);
+}
+
+.file-input input[type="file"] {
+    display: none;
+}
+
+.file-name {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    padding-left: 0.5rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.file-description {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    padding-left: 0.5rem;
+    opacity: 0.8;
+}
+
+.convert-btn {
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+    color: white;
+    border: none;
+    padding: 1.2rem 2.5rem;
+    border-radius: 50px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    transition: var(--transition);
+    margin-top: 2rem;
+    align-self: center;
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+    letter-spacing: 0.5px;
+    box-shadow: 0 8px 20px rgba(108, 90, 205, 0.3);
+}
+
+.convert-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, var(--primary-dark), var(--primary-color));
+    z-index: -1;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.convert-btn:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 25px rgba(108, 90, 205, 0.4);
+}
+
+.convert-btn:hover::before {
+    opacity: 1;
+}
+
+.convert-btn i {
+    transition: transform 0.3s ease;
+}
+
+.convert-btn:hover i {
+    transform: rotate(45deg);
+}
+
+/* Success page styles */
+.success-icon {
+    text-align: center;
+    font-size: 6rem;
+    color: var(--success-color);
+    margin-bottom: 1.5rem;
+    animation: pulseGlow 2s infinite alternate;
+}
+
+.success-card h2 {
+    text-align: center;
+    margin-bottom: 2.5rem;
+    font-size: 2.5rem;
+    color: var(--text-primary);
+    animation: fadeInUp 0.8s ease-out;
+}
+
+.stats {
+    display: flex;
+    justify-content: center;
+    gap: 2.5rem;
+    margin-bottom: 3rem;
+}
+
+.stat-item {
+    display: flex;
+    align-items: center;
+    gap: 1.2rem;
+    padding: 1.5rem 2rem;
+    background-color: var(--dark-surface-lighter);
+    border-radius: 12px;
+    min-width: 200px;
+    transition: var(--transition);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    animation: fadeInUp 1s ease-out;
+}
+
+.stat-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    border-color: var(--primary-light);
+}
+
+.stat-icon {
+    font-size: 2.5rem;
+    color: var(--primary-light);
+}
+
+.stat-content h4 {
+    margin-bottom: 0.3rem;
+    font-size: 1rem;
+    color: var(--text-secondary);
+}
+
+.stat-content p {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    background: linear-gradient(90deg, var(--primary-light), var(--secondary-color));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.actions {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    align-items: center;
+    margin-top: 3rem;
+}
+
+.download-btn, .back-btn {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.2rem 2rem;
+    border-radius: 50px;
+    font-weight: 600;
+    transition: var(--transition);
+    width: 100%;
+    max-width: 400px;
+    justify-content: center;
+    letter-spacing: 0.5px;
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+}
+
+.download-btn {
+    background: linear-gradient(135deg, var(--secondary-color), #25b48c);
+    color: var(--dark-color);
+    box-shadow: 0 8px 20px rgba(44, 230, 178, 0.3);
+}
+
+.download-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #25b48c, var(--secondary-color));
+    z-index: -1;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.download-btn:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 25px rgba(44, 230, 178, 0.4);
+}
+
+.download-btn:hover::before {
+    opacity: 1;
+}
+
+.download-btn i {
+    transition: transform 0.3s ease;
+}
+
+.download-btn:hover i {
+    transform: translateY(-3px);
+}
+
+.back-btn {
+    background-color: transparent;
+    color: var(--text-primary);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+.back-btn:hover {
+    background-color: var(--dark-surface-lighter);
+    color: var(--primary-light);
+    border-color: var(--primary-light);
+    transform: translateX(-5px);
+}
+
+.back-btn i {
+    transition: transform 0.3s ease;
+}
+
+.back-btn:hover i {
+    transform: translateX(-5px);
+}
+
+/* Instructions section */
+.steps {
+    display: flex;
+    flex-direction: column;
+    gap: 2.5rem;
+    margin-top: 2rem;
+}
+
+.step {
+    display: flex;
+    gap: 1.8rem;
+    align-items: flex-start;
+    transition: var(--transition);
+    position: relative;
+}
+
+.step:hover {
+    transform: translateX(10px);
+}
+
+.step::after {
+    content: '';
+    position: absolute;
+    left: 25px;
+    top: 65px;
+    width: 2px;
+    height: calc(100% + 1.5rem);
+    background: linear-gradient(to bottom, var(--primary-light), transparent);
+    z-index: 0;
+}
+
+.step:last-child::after {
+    display: none;
+}
+
+.step-icon {
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+    color: white;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    flex-shrink: 0;
+    z-index: 1;
+    box-shadow: 0 0 15px rgba(108, 90, 205, 0.4);
+    transition: transform 0.3s ease;
+}
+
+.step:hover .step-icon {
+    transform: scale(1.1);
+}
+
+.step-content {
+    background-color: var(--dark-surface-lighter);
+    padding: 1.5rem;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    flex-grow: 1;
+    transition: var(--transition);
+}
+
+.step:hover .step-content {
+    border-color: var(--primary-light);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.step-content h4 {
+    margin-bottom: 0.5rem;
+    color: var(--text-primary);
+    font-size: 1.2rem;
+}
+
+.step-content p {
+    color: var(--text-secondary);
+}
+
+/* Footer styles */
+footer {
+    text-align: center;
+    padding: 3rem 0 2rem;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    opacity: 0.8;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    margin-top: 2rem;
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideInRight {
+    from {
+        opacity: 0;
+        transform: translateX(50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes pulseGlow {
+    from {
+        text-shadow: 0 0 5px rgba(44, 230, 178, 0.5);
+    }
+    to {
+        text-shadow: 0 0 20px rgba(44, 230, 178, 0.8);
+    }
+}
+
+@keyframes rotate {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+    .hero {
+        padding: 2.5rem 1.5rem;
+    }
+    
+    .hero h2 {
+        font-size: 2.2rem;
+    }
+    
+    .converter-card, .success-card, .instructions {
+        padding: 1.8rem;
+    }
+    
+    .stats {
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+    
+    .stat-item {
+        width: 100%;
+    }
+    
+    .step {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .step::after {
+        display: none;
+    }
+    
+    .step-content {
+        width: 100%;
+        text-align: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .app-container {
+        padding: 1rem;
+    }
+    
+    .logo h1 {
+        font-size: 1.4rem;
+    }
+    
+    .hero h2 {
+        font-size: 1.8rem;
+    }
+    
+    .hero p {
+        font-size: 1rem;
+    }
+    
+    .convert-btn, .download-btn, .back-btn {
+        width: 100%;
+    }
+} 

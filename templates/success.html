@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conversion Complete - X-Plane Airway Generator</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <meta name="theme-color" content="#6d5acd">
+</head>
+<body>
+    <div class="app-container">
+        <header>
+            <div class="logo">
+                <i class="fas fa-plane"></i>
+                <h1>X-Plane Airway Generator</h1>
+            </div>
+            <div class="theme-toggle">
+                <i class="fas fa-moon"></i>
+            </div>
+        </header>
+
+        <main>
+            <section class="success-card">
+                <div class="success-icon">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                
+                <h2>Conversion Successful!</h2>
+                
+                <div class="confetti"></div>
+                
+                <div class="stats">
+                    <div class="stat-item">
+                        <div class="stat-icon">
+                            <i class="fas fa-file-alt"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h4>Lines Generated</h4>
+                            <p id="lines-counter">{{ lines_written }}</p>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-item">
+                        <div class="stat-icon">
+                            <i class="fas fa-exclamation-triangle"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h4>Skipped Rows</h4>
+                            <p>{{ skipped_rows }}</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="actions">
+                    <a href="{{ url_for('download', filename=output_file) }}" class="download-btn">
+                        <i class="fas fa-download"></i>
+                        Download Airway DAT File
+                    </a>
+                    
+                    <a href="{{ url_for('index') }}" class="back-btn">
+                        <i class="fas fa-arrow-left"></i>
+                        Convert Another File
+                    </a>
+                </div>
+            </section>
+            
+            <section class="instructions">
+                <h3>What's Next?</h3>
+                <div class="steps">
+                    <div class="step">
+                        <div class="step-icon">
+                            <i class="fas fa-download"></i>
+                        </div>
+                        <div class="step-content">
+                            <h4>1. Download Your File</h4>
+                            <p>Download the generated airway DAT file by clicking the button above.</p>
+                        </div>
+                    </div>
+
+                    <div class="step">
+                        <div class="step-icon">
+                            <i class="fas fa-folder-open"></i>
+                        </div>
+                        <div class="step-content">
+                            <h4>2. Install in X-Plane</h4>
+                            <p>Copy the DAT file to your X-Plane's Custom Data folder.</p>
+                        </div>
+                    </div>
+
+                    <div class="step">
+                        <div class="step-icon">
+                            <i class="fas fa-plane-departure"></i>
+                        </div>
+                        <div class="step-content">
+                            <h4>3. Start Flying</h4>
+                            <p>Launch X-Plane and enjoy your custom airway data with enhanced navigation!</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <p>&copy; 2023 X-Plane Airway Generator | A modern web conversion of the X-Plane Airway Extract tool</p>
+        </footer>
+    </div>
+    
+    <script>
+        // Animated count-up for lines written
+        document.addEventListener('DOMContentLoaded', function() {
+            const linesElement = document.getElementById('lines-counter');
+            const targetValue = parseInt(linesElement.textContent);
+            
+            if (isNaN(targetValue)) return;
+            
+            let currentValue = 0;
+            const duration = 2000; // 2 seconds
+            const stepTime = 20; // Update every 20ms
+            const steps = duration / stepTime;
+            const increment = targetValue / steps;
+            
+            linesElement.textContent = "0";
+            
+            const counter = setInterval(function() {
+                currentValue += increment;
+                
+                if (currentValue >= targetValue) {
+                    linesElement.textContent = targetValue;
+                    clearInterval(counter);
+                } else {
+                    linesElement.textContent = Math.floor(currentValue);
+                }
+            }, stepTime);
+            
+            // Create confetti effect
+            createConfetti();
+        });
+        
+        function createConfetti() {
+            const confettiContainer = document.querySelector('.confetti');
+            const colors = ['#6d5acd', '#9c8aef', '#2ce6b2', '#ffcf56', '#ff7e5f'];
+            
+            for (let i = 0; i < 100; i++) {
+                const confetti = document.createElement('div');
+                
+                // Random position
+                const x = Math.random() * 100;
+                
+                // Random size
+                const size = Math.random() * 10 + 5;
+                
+                // Random color
+                const color = colors[Math.floor(Math.random() * colors.length)];
+                
+                // Random rotation
+                const rotation = Math.random() * 360;
+                
+                // Random shape (square or circle)
+                const shape = Math.random() > 0.5 ? '50%' : '0';
+                
+                // Animation delay
+                const delay = Math.random() * 3;
+                
+                // Animation duration
+                const duration = Math.random() * 3 + 3;
+                
+                confetti.style.cssText = `
+                    position: absolute;
+                    width: ${size}px;
+                    height: ${size}px;
+                    background-color: ${color};
+                    top: -20px;
+                    left: ${x}%;
+                    transform: rotate(${rotation}deg);
+                    border-radius: ${shape};
+                    opacity: 0;
+                    animation: confetti-fall ${duration}s ease-in-out ${delay}s forwards;
+                `;
+                
+                confettiContainer.appendChild(confetti);
+            }
+        }
+    </script>
+    
+    <style>
+        .confetti {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+        
+        @keyframes confetti-fall {
+            0% {
+                transform: translateY(-10px) rotate(0deg);
+                opacity: 1;
+            }
+            
+            80% {
+                opacity: 1;
+            }
+            
+            100% {
+                transform: translateY(500px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+    </style>
+</body>
+</html> 
