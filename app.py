@@ -273,6 +273,20 @@ def convert():
         return redirect(url_for('index'))
 
 
+@app.route('/success')
+def success():
+    lines_written = request.args.get('lines', '0')
+    skipped_rows = request.args.get('skipped', '0')
+    download_url = request.args.get('url', '')
+    filename = request.args.get('filename', '')
+    
+    return render_template('success.html',
+                          lines_written=lines_written,
+                          skipped_rows=skipped_rows,
+                          download_url=download_url,
+                          filename=filename)
+
+
 @app.route('/download/<filename>')
 def download(filename):
     return send_file(os.path.join(TEMP_FOLDER, filename),
