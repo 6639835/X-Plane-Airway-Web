@@ -279,5 +279,9 @@ def download(filename):
                      as_attachment=True)
 
 
+# Use this for local development
 if __name__ == "__main__":
-    app.run(debug=True) 
+    app.run(debug=True)
+
+# This is needed for Vercel deployment
+app = app 
