@@ -119,4 +119,5 @@ def get_file():
     return send_file(output_path, as_attachment=True, download_name=download_name)
 
 if __name__ == '__main__':
-    app.run(debug=True) 
+    port = int(os.environ.get('PORT', 5000))
+    app.run(host='0.0.0.0', port=port, debug=False) 
