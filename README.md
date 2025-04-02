@@ -1,78 +1,77 @@
-# X-Plane Airway Generator
+# X-Plane Airway Converter
 
-A web application for converting navigation route data from CSV format to X-Plane's DAT format. This tool is a web-based conversion of the X-Plane Airway Extract script.
+A web application for converting airway data from CSV format to X-Plane DAT format.
 
 ## Features
 
-- Upload and process CSV files containing route data
-- Reference earth_fix.dat and earth_nav.dat files for point validation
-- Generate properly formatted airway DAT files for X-Plane
-- Beautiful, responsive web interface
+- Convert airway segment data from CSV to X-Plane DAT format
+- Process navigation points with proper area codes
+- Support for different navigation point types (DESIGNATED_POINT, VORDME, NDB)
+- Modern, responsive web interface
+- Live validation and feedback
 - Detailed conversion statistics
 
 ## Requirements
 
-- Python 3.6+
-- Flask
-- tqdm
-- Werkzeug
+- Python 3.8+
+- Flask and dependencies (see requirements.txt)
 
 ## Installation
 
-1. Clone this repository:
-   ```
-   git clone https://github.com/yourusername/x-plane-airway-web.git
-   cd x-plane-airway-web
-   ```
+1. Clone the repository:
+```bash
+git clone https://github.com/yourusername/x-plane-airway-converter.git
+cd x-plane-airway-converter
+```
 
-2. Create a virtual environment (optional but recommended):
-   ```
-   python -m venv venv
-   source venv/bin/activate  # On Windows: venv\Scripts\activate
-   ```
+2. Create a virtual environment and activate it:
+```bash
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+```
 
-3. Install the required dependencies:
-   ```
-   pip install -r requirements.txt
-   ```
+3. Install the required packages:
+```bash
+pip install -r requirements.txt
+```
 
 ## Usage
 
 1. Start the application:
-   ```
-   python app.py
-   ```
+```bash
+python app.py
+```
 
 2. Open your web browser and navigate to:
-   ```
-   http://127.0.0.1:5000/
-   ```
+```
+http://127.0.0.1:5000/
+```
 
-3. Upload your files:
-   - CSV file containing route data (must include CODE_POINT_START, CODE_TYPE_START, CODE_POINT_END, CODE_TYPE_END, CODE_DIR, TXT_DESIG columns)
-   - earth_fix.dat reference file from X-Plane's Custom Data folder
-   - earth_nav.dat reference file from X-Plane's Custom Data folder
+3. Upload the required files:
+   - CSV file with airway data (must contain required fields: CODE_POINT_START, CODE_TYPE_START, CODE_POINT_END, CODE_TYPE_END, CODE_DIR, TXT_DESIG)
+   - earth_fix.dat from X-Plane Custom Data folder
+   - earth_nav.dat from X-Plane Custom Data folder
 
-4. Click the "Convert" button to process the data
+4. Click "Convert Data" and wait for the process to complete
 
-5. Download the generated airway DAT file
+5. Download the generated airway.dat file and place it in your X-Plane Custom Data folder
 
-6. Place the DAT file in your X-Plane's Custom Data folder
+## CSV File Format
 
-## Input CSV Format
-
-The input CSV file should contain the following columns:
-- `CODE_POINT_START`: Starting point identifier
-- `CODE_TYPE_START`: Type of the starting point (DESIGNATED_POINT, VORDME, or VOR)
-- `CODE_POINT_END`: Ending point identifier
-- `CODE_TYPE_END`: Type of the ending point (DESIGNATED_POINT, VORDME, or VOR)
-- `CODE_DIR`: Direction code (N or any other value)
-- `TXT_DESIG`: Airway designation/name
+The input CSV file must include the following columns:
+- `CODE_POINT_START`: Start navigation point identifier
+- `CODE_TYPE_START`: Type of start navigation point (DESIGNATED_POINT, VORDME, NDB)
+- `CODE_POINT_END`: End navigation point identifier
+- `CODE_TYPE_END`: Type of end navigation point (DESIGNATED_POINT, VORDME, NDB)
+- `CODE_DIR`: Direction code (N for two-way, other values for one-way)
+- `TXT_DESIG`: Airway designator
 
 ## License
 
-[MIT License](LICENSE)
+This project is open source and available under the MIT License.
 
 ## Acknowledgements
 
-This project is a web-based adaptation of the X-Plane Airway Extract script for easier usage. 
+- X-Plane for the flight simulator platform
+- Flask for the web framework
+- Bootstrap for the UI components 

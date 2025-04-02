@@ -1,0 +1,143 @@
+{% extends "base.html" %}
+
+{% block title %}X-Plane Airway Converter | Download{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card mb-4">
+            <div class="card-header success">
+                <h4 class="text-light"><i class="bi bi-check-circle-fill me-2"></i>Conversion Complete</h4>
+            </div>
+            <div class="card-body">
+                <div class="text-center py-4">
+                    <div class="success-checkmark mb-4">
+                        <div class="check-icon"></div>
+                    </div>
+                    <h2 class="mb-3">Your X-Plane airway data is ready!</h2>
+                    <p class="text-muted mb-4">The conversion process has been completed successfully.</p>
+                </div>
+
+                <div class="row mb-5">
+                    <div class="col-md-4">
+                        <div class="stat-card primary">
+                            <div class="stat-icon">
+                                <i class="bi bi-table"></i>
+                            </div>
+                            <div class="stat-value" data-count="{{ stats.get('total_rows', 0) }}">0</div>
+                            <div class="stat-label">Total Rows Processed</div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="stat-card warning">
+                            <div class="stat-icon">
+                                <i class="bi bi-skip-forward"></i>
+                            </div>
+                            <div class="stat-value" data-count="{{ stats.get('skipped_rows', 0) }}">0</div>
+                            <div class="stat-label">Skipped Rows</div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="stat-card success">
+                            <div class="stat-icon">
+                                <i class="bi bi-file-earmark-text"></i>
+                            </div>
+                            <div class="stat-value" data-count="{{ stats.get('output_lines', 0) }}">0</div>
+                            <div class="stat-label">Output Lines Generated</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <a href="{{ url_for('get_file') }}" id="downloadBtn" class="btn btn-primary w-100">
+                            <i class="bi bi-download"></i>Download Airway DAT File
+                        </a>
+                    </div>
+                    <div class="col-md-6">
+                        <a href="{{ url_for('index') }}" class="btn btn-outline w-100">
+                            <i class="bi bi-arrow-left"></i>Convert Another File
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Animate number counters
+        const statValues = document.querySelectorAll('.stat-value');
+        
+        statValues.forEach(el => {
+            const targetCount = parseInt(el.getAttribute('data-count')) || 0;
+            const duration = 2000; // Animation duration in ms
+            const frameDuration = 1000 / 60; // 60fps
+            const totalFrames = Math.round(duration / frameDuration);
+            let frame = 0;
+            
+            const counter = setInterval(() => {
+                frame++;
+                
+                // Calculate current count based on easing function
+                const progress = frame / totalFrames;
+                const easing = 1 - Math.pow(1 - progress, 4);
+                const currentCount = Math.floor(easing * targetCount);
+                
+                // Update element
+                el.textContent = currentCount.toLocaleString();
+                
+                if (frame === totalFrames) {
+                    clearInterval(counter);
+                    el.textContent = targetCount.toLocaleString();
+                }
+            }, frameDuration);
+        });
+        
+        // Add download button effects
+        const downloadBtn = document.getElementById('downloadBtn');
+        if (downloadBtn) {
+            downloadBtn.addEventListener('click', function() {
+                this.classList.remove('btn-primary');
+                this.classList.add('btn-secondary');
+                
+                const originalText = this.innerHTML;
+                this.innerHTML = '<i class="bi bi-check-circle"></i>Download Started';
+                
+                // Restore button after delay
+                setTimeout(() => {
+                    this.classList.remove('btn-secondary');
+                    this.classList.add('btn-primary');
+                    this.innerHTML = originalText;
+                }, 3000);
+            });
+        }
+    });
+</script>
+
+<style>
+    @keyframes pulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.05); }
+        100% { transform: scale(1); }
+    }
+    
+    #downloadBtn {
+        animation: pulse 2s infinite;
+        position: relative;
+        overflow: hidden;
+    }
+</style>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Override the airplane cursor on the download page */
+    body, a, button, .btn, * {
+        cursor: default !important;
+    }
+</style>
+{% endblock %} 

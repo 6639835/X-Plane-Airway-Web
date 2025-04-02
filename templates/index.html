@@ -1,230 +1,260 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>X-Plane Airway Generator</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <meta name="theme-color" content="#6d5acd">
-</head>
-<body>
-    <div class="app-container">
-        <header>
-            <div class="logo">
-                <i class="fas fa-plane"></i>
-                <h1>X-Plane Airway Generator</h1>
+{% extends "base.html" %}
+
+{% block title %}X-Plane Airway Converter | Home{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-10">
+        <div class="card mb-4">
+            <div class="card-header primary">
+                <h4 class="text-light"><i class="bi bi-hdd-network-fill me-2"></i>X-Plane Airway Converter</h4>
             </div>
-            <div class="theme-toggle">
-                <i class="fas fa-moon"></i>
-            </div>
-        </header>
-
-        <main>
-            <section class="hero">
-                <div class="hero-content">
-                    <h2>Transform Your Navigation Data</h2>
-                    <p>Convert your route data from CSV format to X-Plane DAT format with a sleek, modern interface.</p>
+            <div class="card-body">
+                <div class="row mb-4">
+                    <div class="col">
+                        <div class="alert alert-primary">
+                            <div class="alert-icon">
+                                <i class="bi bi-info-circle-fill"></i>
+                            </div>
+                            <div class="alert-content">
+                                <div class="alert-title">About this tool</div>
+                                <p class="alert-message">
+                                    This tool converts airway data from CSV format to X-Plane's DAT format. 
+                                    It processes navigation points and creates proper airway definitions 
+                                    that can be used within X-Plane flight simulator.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                
-                <div class="particles"></div>
-            </section>
 
-            <section class="converter-card">
-                <h3>Upload Your Files</h3>
-                
-                {% with messages = get_flashed_messages() %}
-                {% if messages %}
-                <div class="alert alert-error">
-                    <i class="fas fa-exclamation-circle"></i>
-                    {% for message in messages %}
-                    <p>{{ message }}</p>
-                    {% endfor %}
-                </div>
-                {% endif %}
-                {% endwith %}
-                
-                <form action="{{ url_for('convert') }}" method="POST" enctype="multipart/form-data">
-                    <div class="file-input-group">
-                        <div class="file-input">
-                            <label for="csv_file">
-                                <i class="fas fa-file-csv"></i>
-                                <span>Route CSV File</span>
-                            </label>
-                            <input type="file" id="csv_file" name="csv_file" accept=".csv" required>
-                            <span class="file-name" id="csv_file_name">No file selected</span>
+                <!-- Container for file size alerts -->
+                <div class="file-size-alerts"></div>
+
+                <form method="POST" action="{{ url_for('convert') }}" enctype="multipart/form-data" class="needs-validation" novalidate>
+                    <div class="alert alert-info mb-4">
+                        <div class="alert-icon">
+                            <i class="bi bi-exclamation-circle-fill"></i>
                         </div>
-                        <p class="file-description">The CSV file containing navigation route data (must include CODE_POINT_START, CODE_TYPE_START, CODE_POINT_END, CODE_TYPE_END, CODE_DIR, TXT_DESIG columns)</p>
+                        <div class="alert-content">
+                            <div class="alert-title">File Size Limit</div>
+                            <p class="alert-message">
+                                Please note that all files must be under 20MB. Larger files will be rejected.
+                                If you need to process larger files, please split them into smaller chunks.
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <div class="row g-4">
+                        <div class="col-md-4">
+                            <div class="card h-100">
+                                <div class="card-header">
+                                    <h5><i class="bi bi-file-earmark-text me-2 text-primary"></i>CSV Data File</h5>
+                                </div>
+                                <div class="card-body">
+                                    <p class="text-muted mb-3">Upload the airway segment CSV file containing the navigation data</p>
+                                    
+                                    <div class="dropzone" id="csvDropzone">
+                                        <div class="dropzone-icon">
+                                            <i class="bi bi-file-earmark-text"></i>
+                                        </div>
+                                        <div class="dropzone-label">Drag & Drop CSV File</div>
+                                        <p class="dropzone-hint">or click to browse files</p>
+                                        <div class="file-name"></div>
+                                        <div class="dropzone-progress"></div>
+                                        <input class="form-control d-none" type="file" id="csv_file" name="csv_file" accept=".csv" required>
+                                    </div>
+                                    
+                                    <div class="form-text">
+                                        Must include CODE_POINT_START, CODE_TYPE_START, CODE_POINT_END, CODE_TYPE_END, CODE_DIR, TXT_DESIG fields
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="card h-100">
+                                <div class="card-header">
+                                    <h5><i class="bi bi-geo-alt-fill me-2 text-primary"></i>X-Plane Fix Data</h5>
+                                </div>
+                                <div class="card-body">
+                                    <p class="text-muted mb-3">X-Plane earth_fix.dat reference file</p>
+                                    
+                                    <div class="dropzone" id="fixDropzone">
+                                        <div class="dropzone-icon">
+                                            <i class="bi bi-geo-alt"></i>
+                                        </div>
+                                        <div class="dropzone-label">Drag & Drop earth_fix.dat</div>
+                                        <p class="dropzone-hint">or click to browse files</p>
+                                        <div class="file-name"></div>
+                                        <div class="dropzone-progress"></div>
+                                        <input class="form-control d-none" type="file" id="earth_fix" name="earth_fix" accept=".dat" required>
+                                    </div>
+                                    
+                                    <div class="form-text">
+                                        Usually located in X-Plane's Custom Data folder
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="card h-100">
+                                <div class="card-header">
+                                    <h5><i class="bi bi-broadcast me-2 text-primary"></i>X-Plane Nav Data</h5>
+                                </div>
+                                <div class="card-body">
+                                    <p class="text-muted mb-3">X-Plane earth_nav.dat reference file</p>
+                                    
+                                    <div class="dropzone" id="navDropzone">
+                                        <div class="dropzone-icon">
+                                            <i class="bi bi-broadcast"></i>
+                                        </div>
+                                        <div class="dropzone-label">Drag & Drop earth_nav.dat</div>
+                                        <p class="dropzone-hint">or click to browse files</p>
+                                        <div class="file-name"></div>
+                                        <div class="dropzone-progress"></div>
+                                        <input class="form-control d-none" type="file" id="earth_nav" name="earth_nav" accept=".dat" required>
+                                    </div>
+                                    
+                                    <div class="form-text">
+                                        Usually located in X-Plane's Custom Data folder
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
-                    <div class="file-input-group">
-                        <div class="file-input">
-                            <label for="earth_fix">
-                                <i class="fas fa-map-marker-alt"></i>
-                                <span>Earth Fix DAT File</span>
-                            </label>
-                            <input type="file" id="earth_fix" name="earth_fix" accept=".dat" required>
-                            <span class="file-name" id="earth_fix_name">No file selected</span>
-                        </div>
-                        <p class="file-description">The earth_fix.dat file from X-Plane's Custom Data folder</p>
+                    <div class="d-grid mt-4">
+                        <button type="submit" class="btn btn-lg btn-primary">
+                            <i class="bi bi-arrow-right-circle"></i>Convert Data
+                        </button>
                     </div>
-
-                    <div class="file-input-group">
-                        <div class="file-input">
-                            <label for="earth_nav">
-                                <i class="fas fa-broadcast-tower"></i>
-                                <span>Earth Nav DAT File</span>
-                            </label>
-                            <input type="file" id="earth_nav" name="earth_nav" accept=".dat" required>
-                            <span class="file-name" id="earth_nav_name">No file selected</span>
-                        </div>
-                        <p class="file-description">The earth_nav.dat file from X-Plane's Custom Data folder</p>
-                    </div>
-
-                    <button type="submit" class="convert-btn">
-                        <i class="fas fa-cogs"></i>
-                        Convert Now
-                    </button>
                 </form>
-            </section>
-
-            <section class="instructions">
-                <h3>Simple Three-Step Process</h3>
-                <div class="steps">
-                    <div class="step">
-                        <div class="step-icon">
-                            <i class="fas fa-upload"></i>
-                        </div>
-                        <div class="step-content">
-                            <h4>1. Upload Your Files</h4>
-                            <p>Upload your route CSV file along with the X-Plane earth_fix.dat and earth_nav.dat reference files.</p>
-                        </div>
-                    </div>
-
-                    <div class="step">
-                        <div class="step-icon">
-                            <i class="fas fa-cogs"></i>
-                        </div>
-                        <div class="step-content">
-                            <h4>2. Instant Processing</h4>
-                            <p>Our system processes the files and generates a properly formatted DAT file compatible with X-Plane.</p>
-                        </div>
-                    </div>
-
-                    <div class="step">
-                        <div class="step-icon">
-                            <i class="fas fa-download"></i>
-                        </div>
-                        <div class="step-content">
-                            <h4>3. Download & Fly</h4>
-                            <p>Download the generated airway DAT file, place it in your X-Plane Custom Data folder, and take to the skies!</p>
-                        </div>
-                    </div>
-                </div>
-            </section>
-        </main>
-
-        <footer>
-            <p>&copy; 2023 X-Plane Airway Generator | A modern web conversion of the X-Plane Airway Extract tool</p>
-        </footer>
+            </div>
+        </div>
     </div>
+</div>
+{% endblock %}
 
-    <script src="{{ url_for('static', filename='js/upload.js') }}"></script>
-    <script>
-        // Display file names when selected
-        document.getElementById('csv_file').addEventListener('change', function() {
-            document.getElementById('csv_file_name').textContent = this.files[0] ? this.files[0].name : 'No file selected';
-            animateLabel(this);
-        });
-        document.getElementById('earth_fix').addEventListener('change', function() {
-            document.getElementById('earth_fix_name').textContent = this.files[0] ? this.files[0].name : 'No file selected';
-            animateLabel(this);
-        });
-        document.getElementById('earth_nav').addEventListener('change', function() {
-            document.getElementById('earth_nav_name').textContent = this.files[0] ? this.files[0].name : 'No file selected';
-            animateLabel(this);
-        });
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        'use strict';
         
-        function animateLabel(input) {
-            if (input.files[0]) {
-                const label = input.previousElementSibling;
-                label.classList.add('file-selected');
-                setTimeout(() => {
-                    label.classList.remove('file-selected');
-                }, 1000);
-            }
-        }
+        // Setup dropzones for file input
+        const dropzones = document.querySelectorAll('.dropzone');
         
-        // Create particles for hero section
-        document.addEventListener('DOMContentLoaded', function() {
-            const particlesContainer = document.querySelector('.particles');
+        dropzones.forEach(dropzone => {
+            const input = dropzone.querySelector('input[type="file"]');
+            const fileNameDisplay = dropzone.querySelector('.file-name');
             
-            for (let i = 0; i < 50; i++) {
-                let particle = document.createElement('span');
-                particle.classList.add('particle');
+            // Handle click on dropzone
+            dropzone.addEventListener('click', () => {
+                input.click();
+            });
+            
+            // Handle file selection
+            input.addEventListener('change', () => {
+                const file = input.files[0];
                 
-                // Random position
-                let posX = Math.random() * 100;
-                let posY = Math.random() * 100;
-                
-                // Random size
-                let size = Math.random() * 5 + 1;
-                
-                // Random opacity
-                let opacity = Math.random() * 0.5 + 0.1;
-                
-                // Random animation duration
-                let duration = Math.random() * 20 + 10;
-                
-                particle.style.cssText = `
-                    position: absolute;
-                    left: ${posX}%;
-                    top: ${posY}%;
-                    width: ${size}px;
-                    height: ${size}px;
-                    background-color: rgba(255, 255, 255, ${opacity});
-                    border-radius: 50%;
-                    animation: float ${duration}s linear infinite;
-                    z-index: 1;
-                `;
-                
-                particlesContainer.appendChild(particle);
+                if (file) {
+                    fileNameDisplay.textContent = file.name;
+                    dropzone.classList.add('file-selected');
+                    
+                    // Simulate upload progress for visual feedback
+                    const progressBar = dropzone.querySelector('.dropzone-progress');
+                    dropzone.classList.add('file-uploading');
+                    
+                    let width = 0;
+                    const interval = setInterval(() => {
+                        if (width >= 100) {
+                            clearInterval(interval);
+                            setTimeout(() => {
+                                dropzone.classList.remove('file-uploading');
+                            }, 300);
+                        } else {
+                            width += 5;
+                            progressBar.style.width = width + '%';
+                        }
+                    }, 20);
+                } else {
+                    fileNameDisplay.textContent = '';
+                    dropzone.classList.remove('file-selected');
+                }
+            });
+            
+            // Setup drag and drop events
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                dropzone.addEventListener(eventName, preventDefaults, false);
+            });
+            
+            function preventDefaults(e) {
+                e.preventDefault();
+                e.stopPropagation();
             }
+            
+            ['dragenter', 'dragover'].forEach(eventName => {
+                dropzone.addEventListener(eventName, () => {
+                    dropzone.classList.add('highlight');
+                }, false);
+            });
+            
+            ['dragleave', 'drop'].forEach(eventName => {
+                dropzone.addEventListener(eventName, () => {
+                    dropzone.classList.remove('highlight');
+                }, false);
+            });
+            
+            dropzone.addEventListener('drop', (e) => {
+                const dt = e.dataTransfer;
+                const files = dt.files;
+                
+                if (files.length) {
+                    input.files = files;
+                    const event = new Event('change', { bubbles: true });
+                    input.dispatchEvent(event);
+                }
+            }, false);
         });
-    </script>
-    
-    <style>
-        @keyframes float {
-            0% {
-                transform: translateY(0) rotate(0deg);
-            }
-            50% {
-                transform: translateY(-20px) rotate(180deg);
-            }
-            100% {
-                transform: translateY(0) rotate(360deg);
-            }
-        }
         
-        .file-selected {
-            animation: pulse 0.5s ease-in-out;
-        }
+        // Form validation
+        const forms = document.querySelectorAll('.needs-validation');
         
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
-        }
-        
-        .particles {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            z-index: 0;
-        }
-    </style>
-</body>
-</html> 
+        Array.prototype.slice.call(forms).forEach(function(form) {
+            form.addEventListener('submit', function(event) {
+                if (!form.checkValidity()) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    
+                    // Find the first invalid input and highlight its dropzone
+                    const invalidInputs = form.querySelectorAll(':invalid');
+                    if (invalidInputs.length) {
+                        const firstInvalid = invalidInputs[0];
+                        const dropzone = firstInvalid.closest('.dropzone');
+                        if (dropzone) {
+                            dropzone.classList.add('shake');
+                            dropzone.style.borderColor = 'var(--danger)';
+                            setTimeout(() => {
+                                dropzone.classList.remove('shake');
+                                setTimeout(() => {
+                                    dropzone.style.borderColor = '';
+                                }, 500);
+                            }, 820);
+                        }
+                    }
+                } else {
+                    // Show loading state
+                    const submitBtn = form.querySelector('button[type="submit"]');
+                    if (submitBtn) {
+                        submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Processing...';
+                        submitBtn.disabled = true;
+                    }
+                }
+                
+                form.classList.add('was-validated');
+            }, false);
+        });
+    });
+</script>
+{% endblock %} 
